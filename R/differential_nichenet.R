@@ -118,7 +118,7 @@ calculate_niche_de = function(seurat_obj, niches, type, assay_oi = "SCT"){
           if (nrow(sender_vs_sender_tbl %>% filter(sender == sender_other_niche_oi & sender_other_niche == sender_oi)) == 1){
               DE_sender_oi = NULL
             } else {
-              DE_sender_oi = FindMarkers(object = seurat_obj, ident.1 = sender_oi, ident.2 = sender_other_niche_oi, min.pct = 0, logfc.threshold = 0, only.pos = FALSE, assay = assay_oi) %>% rownames_to_column("gene") %>% as_tibble()
+              DE_sender_oi = FindMarkers(object = seurat_obj, ident.1 = sender_oi, ident.2 = sender_other_niche_oi, min.pct = 0, logfc.threshold = 0, only.pos = FALSE, assay = assay_oi) %>% rownames_to_column("gene") %>% as_tibble() %>% dplyr::mutate(p_val_adj = p.adjust(p_val, method = "BH"))
               SeuratV4 = c("avg_log2FC") %in% colnames(DE_sender_oi)
               if(SeuratV4 == FALSE){
                 DE_sender_oi = DE_sender_oi %>% dplyr::rename(avg_log2FC = avg_logFC)
@@ -181,7 +181,7 @@ calculate_niche_de = function(seurat_obj, niches, type, assay_oi = "SCT"){
           if (nrow(receiver_vs_receiver_tbl %>% filter(receiver == receiver_other_niche_oi & receiver_other_niche == receiver_oi)) == 1){
             DE_receiver_oi = NULL
           } else {
-            DE_receiver_oi = FindMarkers(object = seurat_obj, ident.1 = receiver_oi, ident.2 = receiver_other_niche_oi, min.pct = 0, logfc.threshold = 0, only.pos = FALSE, assay = assay_oi) %>% rownames_to_column("gene") %>% as_tibble()
+            DE_receiver_oi = FindMarkers(object = seurat_obj, ident.1 = receiver_oi, ident.2 = receiver_other_niche_oi, min.pct = 0, logfc.threshold = 0, only.pos = FALSE, assay = assay_oi) %>% rownames_to_column("gene") %>% as_tibble() %>% dplyr::mutate(p_val_adj = p.adjust(p_val, method = "BH"))
             SeuratV4 = c("avg_log2FC") %in% colnames(DE_receiver_oi)
             if(SeuratV4 == FALSE){
               DE_receiver_oi = DE_receiver_oi %>% dplyr::rename(avg_log2FC = avg_logFC)
@@ -283,7 +283,7 @@ calculate_niche_de_targets = function(seurat_obj, niches, expression_pct, lfc_cu
           if (nrow(receiver_vs_receiver_tbl %>% filter(receiver == receiver_other_niche_oi & receiver_other_niche == receiver_oi)) == 1){
             DE_receiver_oi = NULL
           } else {
-            DE_receiver_oi = FindMarkers(object = seurat_obj, ident.1 = receiver_oi, ident.2 = receiver_other_niche_oi, min.pct = expression_pct, logfc.threshold = lfc_cutoff, only.pos = FALSE, assay = assay_oi) %>% rownames_to_column("gene") %>% as_tibble()
+            DE_receiver_oi = FindMarkers(object = seurat_obj, ident.1 = receiver_oi, ident.2 = receiver_other_niche_oi, min.pct = expression_pct, logfc.threshold = lfc_cutoff, only.pos = FALSE, assay = assay_oi) %>% rownames_to_column("gene") %>% as_tibble() %>% dplyr::mutate(p_val_adj = p.adjust(p_val, method = "BH"))
             SeuratV4 = c("avg_log2FC") %in% colnames(DE_receiver_oi)
             if(SeuratV4 == FALSE){
               DE_receiver_oi = DE_receiver_oi %>% dplyr::rename(avg_log2FC = avg_logFC)
@@ -631,7 +631,7 @@ calculate_spatial_DE = function(seurat_obj, spatial_info, assay_oi = "SCT"){
 
     print(paste0("Calculate Spatial DE between: ",celltype_oi, " and ", other_celltype))
 
-    DE_table = FindMarkers(object = seurat_obj, ident.1 = celltype_oi, ident.2 = other_celltype, min.pct = 0, logfc.threshold = 0, only.pos = FALSE, assay = assay_oi) %>% rownames_to_column("gene") %>% as_tibble()
+    DE_table = FindMarkers(object = seurat_obj, ident.1 = celltype_oi, ident.2 = other_celltype, min.pct = 0, logfc.threshold = 0, only.pos = FALSE, assay = assay_oi) %>% rownames_to_column("gene") %>% as_tibble() %>% dplyr::mutate(p_val_adj = p.adjust(p_val, method = "BH"))
     SeuratV4 = c("avg_log2FC") %in% colnames(DE_table)
     if(SeuratV4 == FALSE){
       DE_table = DE_table %>% dplyr::rename(avg_log2FC = avg_logFC)
