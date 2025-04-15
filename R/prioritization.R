@@ -361,7 +361,7 @@ generate_info_tables <- function(seuratObj,
     FindMarkers_args[names(list(...))] <-   list(...)
 
     condition_markers <- do.call(FindMarkers, FindMarkers_args) %>%
-                            rownames_to_column("gene")
+                            rownames_to_column("gene") %>% dplyr::mutate(p_val_adj = p.adjust(p_val, method = "BH"))
 
     processed_condition_markers <- process_table_to_ic(condition_markers,
                                                        table_type = "group_DE",
